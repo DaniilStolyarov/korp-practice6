@@ -5,7 +5,7 @@
              xmlns:viewmodel="clr-namespace:App.ViewModel"
              x:DataType="viewmodel:MainViewModel"
              >
-    <Grid Padding="{OnPlatform WinUI='20',Android='0'}" ColumnDefinitions="*" RowDefinitions="*, auto" RowSpacing="20">
+    <Grid Padding="{OnPlatform WinUI='20',Android='0'}" ColumnDefinitions="*" RowDefinitions="*,auto,auto" RowSpacing="20">
         <ScrollView IsVisible="{Binding IsActive_ScrollView}"
                     >
             <Border StrokeThickness="{OnPlatform WinUI='4',Android='0'}" Stroke="#123456" >
@@ -14,7 +14,7 @@
                 </Border.StrokeShape>
                 <Grid Padding="10" BackgroundColor="#fff"
                         ColumnDefinitions="60,*,*"
-                        RowDefinitions="auto,auto,auto,auto,auto,auto"
+                        RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto"
                         ColumnSpacing="{OnPlatform WinUI='10',Android='5'}"
                         RowSpacing="0"
                        >    
@@ -51,21 +51,21 @@
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
-
+                    <Button Text="Добавить" Grid.Row="4" Grid.Column="2" Command="{Binding AddEmptyWorkExperienceCommand}"></Button>
                     <Label HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"
                            LineBreakMode="WordWrap"
-                           Grid.Row="4"
+                           Grid.Row="5"
                            Text="ЗП"></Label>
                     <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="auto"
-                          Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
+                          Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"
                           ColumnSpacing="5">
                         <Label Text="Год"></Label>
                         <Label Grid.Column="1" Text="Месяц"></Label>
                         <Label Grid.Column="2" Text="Итого"></Label>
                     </Grid>
                     <CollectionView ItemsSource="{Binding ViewWorker.PaymentExperience}"
-                                    Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2">
+                                    Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="{x:Type viewmodel:PaymentInfo}">
                                 <Grid RowDefinitions="*" ColumnDefinitions="*,*,*,*" 
@@ -77,14 +77,19 @@
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
+                    <Button Text="Добавить" Grid.Row="8" Grid.Column="2" 
+                            Command="{Binding AddEmptyPaymentExperienceCommand}"></Button>
+
                 </Grid>
             </Border>
         </ScrollView>
-        <HorizontalStackLayout Grid.Row="1" Margin="0,0,0,20" Spacing="10" HorizontalOptions="{OnPlatform WinUI='Center',Android='Center'}">
+        <Button Text="Сохранить" Grid.Row="1" IsVisible="{Binding IsActive_ScrollView}" Command="{Binding SaveToXMLCommand}"></Button>
+        <HorizontalStackLayout Grid.Row="2" Margin="0,0,0,20" Spacing="10" HorizontalOptions="{OnPlatform WinUI='Center',Android='Center'}">
             <Entry Placeholder="Поиск сотрудников по ФИО"
                     WidthRequest="{OnPlatform WinUI='300',Android='200'}"
                    x:Name="SearchEntry"
-                   Text="Петров Павел Константинович"/>
+                   Text="Петров Павел Константинович"
+                   IsSpellCheckEnabled="False"/>
             <Button Text="Поиск" 
                     Command="{Binding FindCommand}"
                     CommandParameter="{Binding Source={x:Reference SearchEntry}, Path=Text}">

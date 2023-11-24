@@ -22,7 +22,6 @@ public partial class Worker : ObservableObject
         WorkExperience = workExperience;
         PaymentExperience = paymentExperience;
     }
-
 }
 public partial class WorkInfo : ObservableObject
 {
@@ -46,13 +45,13 @@ public partial class WorkInfo : ObservableObject
 public partial class PaymentInfo : ObservableObject
 {
     [ObservableProperty]
-    public int year;
+    public int? year;
     [ObservableProperty]
-    public int month;
+    public int? month;
     [ObservableProperty]
-    public double payment;
+    public double? payment;
 
-    public PaymentInfo(int year, int month, double payment)
+    public PaymentInfo(int? year, int? month, double? payment)
     {
         Year = year;
         Month = month;
@@ -62,6 +61,7 @@ public partial class PaymentInfo : ObservableObject
 
 public partial class MainViewModel : ObservableObject
 {
+    public static string WorkersFileName = "Workers.xml";
     public string WorkerStringXml = "";
     [ObservableProperty]
     ObservableCollection<Worker> workers;
@@ -71,18 +71,111 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     bool isActive_ScrollView;
+
+    public MainViewModel()
+    {
+        ViewWorker = new Worker("qwe", "rty", [], []);
+        Workers = [];
+        IsActive_ScrollView = false;
+        ProcessWorkersXml();
+    }
     [RelayCommand]
     public void Find(string q)
     {
         ViewWorker = Workers.Where(worker => worker.Name == q).FirstOrDefault(ViewWorker);
         IsActive_ScrollView = true;
     }
-    async Task ProcessWorkersXml(ObservableCollection<Worker> Workers)
+    [RelayCommand]
+    public void AddEmptyWorkExperience()
     {
-        
+        ViewWorker.WorkExperience.Add(new WorkInfo("", "", "", ""));
+    }
+    [RelayCommand]
+    public void AddEmptyPaymentExperience()
+    {
+        ViewWorker.PaymentExperience.Add(new PaymentInfo(null, null, null));
+    }
+    [RelayCommand]
+    public void SaveToXML()
+    {
+        XmlDocument resXml = new();
+        XmlElement xWorkers = resXml.CreateElement("Сотрудники");
+        foreach (var worker in Workers)
+        {
+            XmlElement xWorker = resXml.CreateElement("Сотрудник");
+            XmlElement xName = resXml.CreateElement("ФИО");
+                xName.AppendChild(resXml.CreateTextNode(worker.Name));
+            XmlElement xYear = resXml.CreateElement("Год_рождения");
+                xYear.AppendChild(resXml.CreateTextNode(worker.BirthString));
+            XmlElement xWorkList = resXml.CreateElement("Список_Работ");
+            foreach(var workInfo in worker.WorkExperience)
+            {
+                XmlElement xWorkInfo = resXml.CreateElement("Работа");
+                XmlElement xWorkInfo_Name = resXml.CreateElement("Название_должности");
+                    xWorkInfo_Name.AppendChild(resXml.CreateTextNode(workInfo.Name));
+                XmlElement xWorkInfo_Start = resXml.CreateElement("Дата_начала");
+                    xWorkInfo_Start.AppendChild(resXml.CreateTextNode(workInfo.Start));
+                XmlElement xWorkInfo_Finish = resXml.CreateElement("Дата_окончания");
+                    xWorkInfo_Finish.AppendChild(resXml.CreateTextNode(workInfo.Finish));
+                XmlElement xWorkInfo_Department = resXml.CreateElement("Отдел");
+                    xWorkInfo_Department.AppendChild(resXml.CreateTextNode(workInfo.Department));
+
+                xWorkInfo.AppendChild(xWorkInfo_Name);
+                xWorkInfo.AppendChild(xWorkInfo_Start);
+                xWorkInfo.AppendChild(xWorkInfo_Finish);
+                xWorkInfo.AppendChild(xWorkInfo_Department);
+                xWorkList.AppendChild(xWorkInfo);
+            }
+            XmlElement xPaymentList = resXml.CreateElement("Список_Зарплат");
+            foreach (var paymentInfo in worker.PaymentExperience)
+            {
+                XmlElement xPayment = resXml.CreateElement("Зарплата");
+                XmlElement xPayment_Year = resXml.CreateElement("Год");
+                xPayment_Year.AppendChild(resXml.CreateTextNode(paymentInfo.Year == null ? "" : paymentInfo.Year.ToString()));
+                XmlElement xPayment_Month = resXml.CreateElement("Месяц");
+                xPayment_Month.AppendChild(resXml.CreateTextNode(paymentInfo.Month == null ? "" : paymentInfo.Month.ToString()));
+                XmlElement xPayment_Payment = resXml.CreateElement("Итого");
+                xPayment_Payment.AppendChild(resXml.CreateTextNode(paymentInfo.Payment == null ? "" : paymentInfo.Payment.ToString()));
+                xPayment.AppendChild(xPayment_Year);
+                xPayment.AppendChild(xPayment_Month);
+                xPayment.AppendChild(xPayment_Payment);
+                xPaymentList.AppendChild(xPayment);
+            }
+            xWorker.AppendChild(xName);
+            xWorker.AppendChild(xYear);
+            xWorker.AppendChild(xWorkList);
+            xWorker.AppendChild(xPaymentList);
+            xWorkers.AppendChild(xWorker);
+        }
+        resXml.AppendChild(xWorkers);
+        SaveToFile("Workers.xml", 
+            resXml
+            ).Wait();
+    }
+    public async Task SaveToFile(string filename, XmlDocument doc)
+    {
+        // Create an output filename
+        string targetFile = Path.Combine(FileSystem.Current.AppDataDirectory, filename);
+        doc.Save(targetFile);
+        ViewWorker.Name = targetFile;
+    }
+    async Task readDefaultWorkers()
+    {
         using var stream = await FileSystem.OpenAppPackageFileAsync("Workers.xml");
         using var reader = new StreamReader(stream);
         WorkerStringXml = reader.ReadToEnd();
+    }
+    async Task ProcessWorkersXml()
+    {
+
+        if (File.Exists(Path.Combine(FileSystem.Current.AppDataDirectory, WorkersFileName)))
+        {
+            WorkerStringXml = File.ReadAllText(Path.Combine(FileSystem.Current.AppDataDirectory, WorkersFileName));
+        }
+        else
+        {
+            await readDefaultWorkers();
+        }
 
         XmlDocument xDocument = new();
         xDocument.LoadXml(WorkerStringXml);
@@ -114,15 +207,5 @@ public partial class MainViewModel : ObservableObject
             }
             Workers.Add(new Worker(name, birthDateString, workList, paymentList));
         }
-        
-
     }
-    public MainViewModel()
-    {
-        ViewWorker = new Worker("qwe", "rty", [], []);
-        Workers = [];
-        IsActive_ScrollView = false;
-        ProcessWorkersXml(Workers);
-    }
-    
 }
