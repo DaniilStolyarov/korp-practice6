@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App.MainPage"
+             xmlns:viewmodel="clr-namespace:App.ViewModel"
+             x:DataType="viewmodel:MainViewModel"
+             >
+    <Grid Padding="{OnPlatform WinUI='20',Android='0'}" ColumnDefinitions="*" RowDefinitions="*, auto" RowSpacing="20">
+        <ScrollView IsVisible="{Binding IsActive_ScrollView}"
+                    >
+            <Border StrokeThickness="{OnPlatform WinUI='4',Android='0'}" Stroke="#123456" >
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="4"></RoundRectangle>
+                </Border.StrokeShape>
+                <Grid Padding="10" BackgroundColor="#fff"
+                        ColumnDefinitions="60,*,*"
+                        RowDefinitions="auto,auto,auto,auto,auto,auto"
+                        ColumnSpacing="{OnPlatform WinUI='10',Android='5'}"
+                        RowSpacing="0"
+                       >    
+                    <Image Source="user.png" HeightRequest="60" Grid.RowSpan="2"></Image>
+                    <Label Text=" ФИО" Grid.Column="1" Grid.Row="0"></Label>
+                    <Entry Text="{Binding ViewWorker.Name}" Grid.Column="1" Grid.Row="1"></Entry>
+                    <Label Text=" Год рождения" Grid.Column="2" Grid.Row="0"></Label>
+                    <Entry Text="{Binding ViewWorker.BirthString}" Grid.Column="2" Grid.Row="1"></Entry>
+
+                    <Label HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center" 
+                           LineBreakMode="WordWrap"
+                           Grid.Row="2"
+                           Text="Опыт работы"></Label>
+                    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="auto"
+                          Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+                          ColumnSpacing="5" VerticalOptions="End">
+                        <Label Text="Должность"></Label>
+                        <Label Grid.Column="1" Text="Начало"></Label>
+                        <Label Grid.Column="2" Text="Конец"></Label>
+                        <Label Grid.Column="3" Text="Отдел"></Label>
+                    </Grid>
+                    <CollectionView ItemsSource="{Binding ViewWorker.WorkExperience}"
+                                    Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="{x:Type viewmodel:WorkInfo}">
+                                <Grid RowDefinitions="*" ColumnDefinitions="*,*,*,*" 
+                                      ColumnSpacing="5" Margin="0,0,0,5">
+                                    <Entry Text="{Binding Name}"></Entry>
+                                    <Entry Grid.Column="1" Text="{Binding Start}"></Entry>
+                                    <Entry Grid.Column="2" Text="{Binding Finish}"></Entry>
+                                    <Entry Grid.Column="3" Text="{Binding Department}"></Entry>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <Label HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"
+                           Grid.Row="4"
+                           Text="ЗП"></Label>
+                    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="auto"
+                          Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
+                          ColumnSpacing="5">
+                        <Label Text="Год"></Label>
+                        <Label Grid.Column="1" Text="Месяц"></Label>
+                        <Label Grid.Column="2" Text="Итого"></Label>
+                    </Grid>
+                    <CollectionView ItemsSource="{Binding ViewWorker.PaymentExperience}"
+                                    Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="{x:Type viewmodel:PaymentInfo}">
+                                <Grid RowDefinitions="*" ColumnDefinitions="*,*,*,*" 
+                                      ColumnSpacing="5" Margin="0,0,0,5">
+                                    <Entry Text="{Binding Year}"></Entry>
+                                    <Entry Grid.Column="1" Text="{Binding Month}"></Entry>
+                                    <Entry Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding Payment}"></Entry>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </Border>
+        </ScrollView>
+        <HorizontalStackLayout Grid.Row="1" Margin="0,0,0,20" Spacing="10" HorizontalOptions="{OnPlatform WinUI='Center',Android='Center'}">
+            <Entry Placeholder="Поиск сотрудников по ФИО"
+                    WidthRequest="{OnPlatform WinUI='300',Android='200'}"
+                   x:Name="SearchEntry"
+                   Text="Петров Павел Константинович"/>
+            <Button Text="Поиск" 
+                    Command="{Binding FindCommand}"
+                    CommandParameter="{Binding Source={x:Reference SearchEntry}, Path=Text}">
+            </Button>
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>
