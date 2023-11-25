@@ -200,10 +200,17 @@ public partial class MainViewModel : ObservableObject
     public async Task SaveToFile(string filename, XmlDocument doc)
     {
         // Create an output filename
-        string targetFile = Path.Combine(FileSystem.Current.AppDataDirectory, filename);
-        doc.Save(targetFile);
-        Application.Current.MainPage.DisplayAlert("Путь к файлу", targetFile, "Копировать в буфер");
-        await Clipboard.Default.SetTextAsync(targetFile);
+        try
+        {
+            string targetFile = Path.Combine(FileSystem.Current.AppDataDirectory, filename);
+            doc.Save(targetFile);
+            Application.Current.MainPage.DisplayAlert("Путь к файлу", targetFile, "Копировать в буфер");
+            await Clipboard.Default.SetTextAsync(targetFile);
+        }
+        catch (Exception ex)
+        {
+            Application.Current.MainPage.DisplayAlert("Ошибка", ex.Message, "Ладно");
+        }
     }
     async Task readDefaultWorkers()
     {
