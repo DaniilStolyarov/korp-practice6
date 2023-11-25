@@ -40,6 +40,10 @@ public partial class WorkInfo : ObservableObject
         Finish = finish;
         Department = department;
     }
+    public bool isEmpty()
+    {
+        return Name == "" && Start == "" && Finish == "" && Department == "";
+    }
 }
 
 public partial class PaymentInfo : ObservableObject
@@ -57,6 +61,10 @@ public partial class PaymentInfo : ObservableObject
         Month = month;
         Payment = payment;
     }
+    public bool isEmpty()
+    {
+        return (Year == null && Month == null && Payment == null);
+    }
 }
 
 public partial class MainViewModel : ObservableObject
@@ -71,19 +79,31 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     bool isActive_ScrollView;
-
+    [ObservableProperty]
+    bool isActive_AddWorkerButton;
     public MainViewModel()
     {
         ViewWorker = new Worker("qwe", "rty", [], []);
         Workers = [];
         IsActive_ScrollView = false;
+        IsActive_AddWorkerButton = true;
         ProcessWorkersXml();
     }
     [RelayCommand]
     public void Find(string q)
     {
-        ViewWorker = Workers.Where(worker => worker.Name == q).FirstOrDefault(ViewWorker);
+        try
+        {
+            ViewWorker = Workers.Where(worker => worker.Name == q).First();
+        }
+        catch(Exception ex)
+        {
+            Application.Current.MainPage.DisplayAlert("Ошибка", "Пользователь с таким ФИО не найден.", "Ладно");
+            return;
+        }
+
         IsActive_ScrollView = true;
+        IsActive_AddWorkerButton = false;
     }
     [RelayCommand]
     public void AddEmptyWorkExperience()
@@ -102,6 +122,7 @@ public partial class MainViewModel : ObservableObject
         XmlElement xWorkers = resXml.CreateElement("Сотрудники");
         foreach (var worker in Workers)
         {
+            if (worker.Name == "") continue;
             XmlElement xWorker = resXml.CreateElement("Сотрудник");
             XmlElement xName = resXml.CreateElement("ФИО");
                 xName.AppendChild(resXml.CreateTextNode(worker.Name));
@@ -110,6 +131,7 @@ public partial class MainViewModel : ObservableObject
             XmlElement xWorkList = resXml.CreateElement("Список_Работ");
             foreach(var workInfo in worker.WorkExperience)
             {
+                if (workInfo.isEmpty()) continue;
                 XmlElement xWorkInfo = resXml.CreateElement("Работа");
                 XmlElement xWorkInfo_Name = resXml.CreateElement("Название_должности");
                     xWorkInfo_Name.AppendChild(resXml.CreateTextNode(workInfo.Name));
@@ -129,6 +151,7 @@ public partial class MainViewModel : ObservableObject
             XmlElement xPaymentList = resXml.CreateElement("Список_Зарплат");
             foreach (var paymentInfo in worker.PaymentExperience)
             {
+                if (paymentInfo.isEmpty()) continue;
                 XmlElement xPayment = resXml.CreateElement("Зарплата");
                 XmlElement xPayment_Year = resXml.CreateElement("Год");
                 xPayment_Year.AppendChild(resXml.CreateTextNode(paymentInfo.Year == null ? "" : paymentInfo.Year.ToString()));
@@ -140,6 +163,7 @@ public partial class MainViewModel : ObservableObject
                 xPayment.AppendChild(xPayment_Month);
                 xPayment.AppendChild(xPayment_Payment);
                 xPaymentList.AppendChild(xPayment);
+
             }
             xWorker.AppendChild(xName);
             xWorker.AppendChild(xYear);
@@ -151,13 +175,35 @@ public partial class MainViewModel : ObservableObject
         SaveToFile("Workers.xml", 
             resXml
             ).Wait();
+        ProcessWorkersXml();
+        IsActive_ScrollView = false;
+        IsActive_AddWorkerButton = true;
+    }
+    [RelayCommand]
+    public async Task AddWorker()
+    {
+        string Name = await Application.Current.MainPage.DisplayPromptAsync(
+            title: "Добавить сотрудника", message: "Введите ФИО:", placeholder: "ФИО");
+        if (Name == null) return;
+        if (Workers.Any(w => w.Name == Name))
+        {
+            await Application.Current.MainPage
+                .DisplayAlert("Ошибка", "Работник с таким ФИО уже существует.", "Ладно");
+            return;
+        }
+        Worker worker = new Worker(Name, "", [], []);
+        Workers.Add(worker);
+        ViewWorker = worker;
+        IsActive_AddWorkerButton = false;
+        IsActive_ScrollView = true;
     }
     public async Task SaveToFile(string filename, XmlDocument doc)
     {
         // Create an output filename
         string targetFile = Path.Combine(FileSystem.Current.AppDataDirectory, filename);
         doc.Save(targetFile);
-        ViewWorker.Name = targetFile;
+        Application.Current.MainPage.DisplayAlert("Путь к файлу", targetFile, "Копировать в буфер");
+        await Clipboard.Default.SetTextAsync(targetFile);
     }
     async Task readDefaultWorkers()
     {
@@ -167,7 +213,7 @@ public partial class MainViewModel : ObservableObject
     }
     async Task ProcessWorkersXml()
     {
-
+        Workers.Clear();
         if (File.Exists(Path.Combine(FileSystem.Current.AppDataDirectory, WorkersFileName)))
         {
             WorkerStringXml = File.ReadAllText(Path.Combine(FileSystem.Current.AppDataDirectory, WorkersFileName));
@@ -207,5 +253,10 @@ public partial class MainViewModel : ObservableObject
             }
             Workers.Add(new Worker(name, birthDateString, workList, paymentList));
         }
+    }
+    public void ToggleScrollView(bool on)
+    {
+        IsActive_AddWorkerButton = !on;
+        IsActive_ScrollView = on;
     }
 }

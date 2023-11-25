@@ -5,13 +5,18 @@
              xmlns:viewmodel="clr-namespace:App.ViewModel"
              x:DataType="viewmodel:MainViewModel"
              >
+   
     <Grid Padding="{OnPlatform WinUI='20',Android='0'}" ColumnDefinitions="*" RowDefinitions="*,auto,auto" RowSpacing="20">
-        <ScrollView IsVisible="{Binding IsActive_ScrollView}"
+        <Button Text="Добавить пользователя" Grid.RowSpan="2" WidthRequest="300" HeightRequest="50" 
+                IsVisible="{Binding IsActive_AddWorkerButton}"
+                Command="{Binding AddWorkerCommand}"></Button>
+        <Border StrokeThickness="{OnPlatform WinUI='4',Android='0'}" Stroke="#123456" IsVisible="{Binding IsActive_ScrollView}">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="4"></RoundRectangle>
+            </Border.StrokeShape>
+            <ScrollView IsVisible="{Binding IsActive_ScrollView}"
                     >
-            <Border StrokeThickness="{OnPlatform WinUI='4',Android='0'}" Stroke="#123456" >
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="4"></RoundRectangle>
-                </Border.StrokeShape>
+
                 <Grid Padding="10" BackgroundColor="#fff"
                         ColumnDefinitions="60,*,*"
                         RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto"
@@ -20,9 +25,9 @@
                        >    
                     <Image Source="user.png" HeightRequest="60" Grid.RowSpan="2"></Image>
                     <Label Text=" ФИО" Grid.Column="1" Grid.Row="0"></Label>
-                    <Entry Text="{Binding ViewWorker.Name}" Grid.Column="1" Grid.Row="1"></Entry>
+                    <Entry  Background="#eee" Text="{Binding ViewWorker.Name}" Grid.Column="1" Grid.Row="1"></Entry>
                     <Label Text=" Год рождения" Grid.Column="2" Grid.Row="0"></Label>
-                    <Entry Text="{Binding ViewWorker.BirthString}" Grid.Column="2" Grid.Row="1"></Entry>
+                    <Entry  Background="#eee" Text="{Binding ViewWorker.BirthString}" Grid.Column="2" Grid.Row="1"></Entry>
 
                     <Label HorizontalOptions="Center"
                            HorizontalTextAlignment="Center" 
@@ -43,15 +48,18 @@
                             <DataTemplate x:DataType="{x:Type viewmodel:WorkInfo}">
                                 <Grid RowDefinitions="*" ColumnDefinitions="*,*,*,*" 
                                       ColumnSpacing="5" Margin="0,0,0,5">
-                                    <Entry Text="{Binding Name}"></Entry>
-                                    <Entry Grid.Column="1" Text="{Binding Start}"></Entry>
-                                    <Entry Grid.Column="2" Text="{Binding Finish}"></Entry>
-                                    <Entry Grid.Column="3" Text="{Binding Department}"></Entry>
+                                    <Entry  Background="#eee" Text="{Binding Name}"></Entry>
+                                    <Entry  Background="#eee" Grid.Column="1" Text="{Binding Start}"></Entry>
+                                    <Entry  Background="#eee" Grid.Column="2" Text="{Binding Finish}"></Entry>
+                                    <Entry  Background="#eee" Grid.Column="3" Text="{Binding Department}"></Entry>
                                 </Grid>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
-                    <Button Text="Добавить" Grid.Row="4" Grid.Column="2" Command="{Binding AddEmptyWorkExperienceCommand}"></Button>
+                    <Button Text="Добавить" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" 
+                            Command="{Binding AddEmptyWorkExperienceCommand}"
+                            WidthRequest="150" HorizontalOptions="Center"
+                            Margin="0,10,0,10"></Button>         
                     <Label HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"
                            LineBreakMode="WordWrap"
@@ -70,22 +78,24 @@
                             <DataTemplate x:DataType="{x:Type viewmodel:PaymentInfo}">
                                 <Grid RowDefinitions="*" ColumnDefinitions="*,*,*,*" 
                                       ColumnSpacing="5" Margin="0,0,0,5">
-                                    <Entry Text="{Binding Year}"></Entry>
-                                    <Entry Grid.Column="1" Text="{Binding Month}"></Entry>
-                                    <Entry Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding Payment}"></Entry>
+                                    <Entry  Background="#eee" Text="{Binding Year}"></Entry>
+                                    <Entry  Background="#eee" Grid.Column="1" Text="{Binding Month}"></Entry>
+                                    <Entry  Background="#eee" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding Payment}"></Entry>
                                 </Grid>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
-                    <Button Text="Добавить" Grid.Row="8" Grid.Column="2" 
-                            Command="{Binding AddEmptyPaymentExperienceCommand}"></Button>
-
+                    <Button Text="Добавить" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" 
+                            Command="{Binding AddEmptyPaymentExperienceCommand}"
+                            WidthRequest="150" HorizontalOptions="Center"
+                            Margin="0,10,0,0"></Button>
                 </Grid>
-            </Border>
-        </ScrollView>
-        <Button Text="Сохранить" Grid.Row="1" IsVisible="{Binding IsActive_ScrollView}" Command="{Binding SaveToXMLCommand}"></Button>
+            </ScrollView>
+        </Border>
+        <Button WidthRequest="150" HorizontalOptions="End" 
+            Text="Сохранить" Grid.Row="1" IsVisible="{Binding IsActive_ScrollView}" Command="{Binding SaveToXMLCommand}"></Button>
         <HorizontalStackLayout Grid.Row="2" Margin="0,0,0,20" Spacing="10" HorizontalOptions="{OnPlatform WinUI='Center',Android='Center'}">
-            <Entry Placeholder="Поиск сотрудников по ФИО"
+            <Entry  Background="#eee" Placeholder="Поиск сотрудников по ФИО"
                     WidthRequest="{OnPlatform WinUI='300',Android='200'}"
                    x:Name="SearchEntry"
                    Text="Петров Павел Константинович"
