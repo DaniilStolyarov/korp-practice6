@@ -83,8 +83,8 @@ public partial class MainViewModel : ObservableObject
     bool isActive_AddWorkerButton;
     public MainViewModel()
     {
-        ViewWorker = new Worker("qwe", "rty", [], []);
-        Workers = [];
+        ViewWorker = new Worker("Empty", "", [], []);
+        Workers = AppGlobals.Workers;
         IsActive_ScrollView = false;
         IsActive_AddWorkerButton = true;
         ProcessWorkersXml();
@@ -196,6 +196,11 @@ public partial class MainViewModel : ObservableObject
         ViewWorker = worker;
         IsActive_AddWorkerButton = false;
         IsActive_ScrollView = true;
+    }
+    [RelayCommand]
+    async Task ToggleSecondPage()
+    {
+        await Shell.Current.GoToAsync(nameof(SecondPage));
     }
     public async Task SaveToFile(string filename, XmlDocument doc)
     {

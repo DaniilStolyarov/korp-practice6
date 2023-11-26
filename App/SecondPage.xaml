@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App.SecondPage"
+             Title="Задания 2-6"
+            xmlns:viewmodel="clr-namespace:App.ViewModel"
+            x:DataType="viewmodel:SecondViewModel">
+    <VerticalStackLayout Padding="10" Spacing="20">
+        <Border StrokeThickness="1" Padding="20,0,20,0">
+            <ScrollView HeightRequest="450">
+                <VerticalStackLayout>
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" ColumnSpacing="10" RowSpacing="10">
+                        <VerticalStackLayout Grid.ColumnSpan="2">
+                            <Label FontSize="20">Задание 2</Label>
+                            <Label HorizontalOptions="Start">Вывод по каждому отделу количества работающих сотрудников и списка должностей (без повторов). Для каждого отдела определить долю работающих сотрудников из общего контингента. Работающим считается сотрудник, у которого хотя бы для одной должности не указана дата увольнения.</Label>
+                        </VerticalStackLayout>
+                        <CollectionView Grid.Row="1" ItemsSource="{Binding CowList}" Header="Ответ">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="{x:Type viewmodel:CountOfWorkingWorkers}">
+                                    <Border>
+                                        <Grid ColumnDefinitions="*,*,*,*"  Background="White">
+                                            <Label Grid.Column="0" Text="{Binding Department}"></Label>
+                                            <Label Grid.Column="1" Text="{Binding Count}"></Label>
+                                            <Label Grid.Column="2" Text="{Binding ListOfWorks}"></Label>
+                                            <Label Grid.Column="3" Text="{Binding Activity}"></Label>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Grid>
+                    <VerticalStackLayout >
+                        <Label FontSize="20">Задание 3</Label>
+                        <Label HorizontalOptions="Start">Вывод сотрудников, которые работают на текущий момент в более чем одном отделе.</Label>
+                        <Label Text="Ответ"></Label>
+                        <Label Text="{Binding WorkersThatWorkOnMultipleJobs}"></Label>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout >
+                        <Label FontSize="20">Задание 4</Label>
+                        <Label HorizontalOptions="Start">Вывод отделов, в которых работает не более 3 сотрудников.</Label>
+                        <Label Text="Ответ"></Label>
+                        <Label Text="{Binding DepartmentsThatHaveMultipleWorkers}"></Label>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout >
+                        <Label FontSize="20">Задание 5</Label>
+                        <Label HorizontalOptions="Start">вывод годов, в которых было принято и уволено наибольшее и наименьшee количество сотрудников.</Label>
+                        <Label Text="Ответ (max нанято, min уволено)"></Label>
+                        <Label Text="{Binding YearSummonMax}"></Label>
+                        <Label Text="{Binding YearFiredMin}"></Label>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout >
+                        <Label FontSize="20">Задание 6</Label>
+                        <Label HorizontalOptions="Start">Вывод сотрудников, у которых в этом году юбилей. Результатдолжен содержать ФИО сотрудника и количество лет.</Label>
+                        <Label Text="Ответ"></Label>
+                        <Label Text="{Binding PWorkers}"></Label>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+    </VerticalStackLayout>
+</ContentPage>
