@@ -5,9 +5,8 @@
              Title="Задания 2-6"
             xmlns:viewmodel="clr-namespace:App.ViewModel"
             x:DataType="viewmodel:SecondViewModel">
-    <VerticalStackLayout Padding="10" Spacing="20">
-        <Border StrokeThickness="1" Padding="20,0,20,0">
-            <ScrollView HeightRequest="450">
+    <ScrollView Margin="10">
+        <Border StrokeThickness="1" Padding="20,0,20,100">
                 <VerticalStackLayout>
                     <Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" ColumnSpacing="10" RowSpacing="10">
                         <VerticalStackLayout Grid.ColumnSpan="2">
@@ -54,8 +53,8 @@
                         <Label Text="Ответ"></Label>
                         <Label Text="{Binding PWorkers}"></Label>
                     </VerticalStackLayout>
+                <Button Text="К заданию 8" WidthRequest="250" Command="{Binding GoToNextPageCommand}"></Button>
                 </VerticalStackLayout>
-            </ScrollView>
         </Border>
-    </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

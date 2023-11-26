@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App.StatPage"
+             xmlns:viewmodel="clr-namespace:App.ViewModel"
+             x:DataType="viewmodel:StatViewModel"
+             xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             Title="Задание 8">
+    <ScrollView Padding="20">
+        <VerticalStackLayout Spacing="20">
+            <Label Text="Построить график изменения курса валюты (пользователь имеет возможность указать диапазон дат и валюту)"/>
+            <HorizontalStackLayout Spacing="10">
+                <VerticalStackLayout>
+                    <Label Text="Начало:"></Label>
+                    <DatePicker Date="01.01.2023" x:Name="Start" DateSelected="Selected"></DatePicker>
+                </VerticalStackLayout>
+                <StackLayout  Grid.Row="1" >
+                    <Label Text="Конец:"></Label>
+                    <DatePicker x:Name="Finish" DateSelected="Selected"></DatePicker>
+                </StackLayout>
+                <StackLayout>
+                    <Label Text="Валюта к рублю"></Label>
+                    <Picker x:Name="MoneyType" SelectedIndexChanged="MoneyType_SelectedIndexChanged"></Picker>
+                </StackLayout>
+            </HorizontalStackLayout>
+            
+            <micro:ChartView x:Name="chartView" HeightRequest="350"></micro:ChartView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

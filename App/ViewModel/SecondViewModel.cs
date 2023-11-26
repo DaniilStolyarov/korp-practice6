@@ -140,5 +140,9 @@ public partial class SecondViewModel : ObservableObject
             Application.Current.MainPage.DisplayAlert("Ошибка", ex.Message, "Ладно");
         }
     }
-
+    [RelayCommand]
+    async Task GoToNextPage()
+    {
+        await Shell.Current.GoToAsync(nameof(StatPage));
+    }
 }
