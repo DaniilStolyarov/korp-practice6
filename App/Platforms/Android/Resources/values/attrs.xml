@@ -1,0 +1,6 @@
+<resources>
+<declare-styleable name='SKCanvasView'>
+	<attr name='ignorePixelScaling' format='boolean'/>
+</declare-styleable>
+</resources>
+<!--https://github.com/mono/SkiaSharp/issues/2444#issuecomment-1564090245-->

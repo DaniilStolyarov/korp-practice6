@@ -9,7 +9,6 @@ using System.Xml;
 namespace App;
 class Record(string date, double nominal, double value, double vunitRate)
 {
-
     public string date = date;
     public double nominal = nominal;
     public double value = value;
@@ -26,7 +25,7 @@ public partial class StatPage : ContentPage
         if (moneyCode == null || moneyCode == "") moneyCode = "R01235";
         XmlDocument Prices = new XmlDocument();
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); // добавляет кодировку windows-1251
-        Prices.Load($"http://www.cbr.ru/scripts/XML_dynamic.asp?date_req1={startDate}&date_req2={finishDate}&VAL_NM_RQ={moneyCode}");
+        Prices.Load($"https://www.cbr.ru/scripts/XML_dynamic.asp?date_req1={startDate}&date_req2={finishDate}&VAL_NM_RQ={moneyCode}");
         records = [];
         XmlElement xValCurs = Prices.DocumentElement;
         foreach (XmlElement xRecord in xValCurs)
@@ -71,7 +70,8 @@ public partial class StatPage : ContentPage
             LineSize = 1,
             LabelColor = SKColor.Parse("#000000"),
             PointSize = 4f,
-            LineMode = LineMode.Straight
+            LineMode = LineMode.Straight,
+            IsAnimated = false
         };
     }
     public StatPage(StatViewModel vm)
@@ -80,7 +80,7 @@ public partial class StatPage : ContentPage
 		BindingContext = vm;
         XmlDocument Codes = new XmlDocument();
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); // добавляет кодировку windows-1251
-        Codes.Load($"http://www.cbr.ru/scripts/XML_val.asp?d=0");
+        Codes.Load($"https://www.cbr.ru/scripts/XML_val.asp?d=0");
 
         mapNameCode = new Dictionary<string, string>();
         XmlElement xRoot = Codes.DocumentElement;
