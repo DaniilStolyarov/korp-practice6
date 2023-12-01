@@ -8,7 +8,7 @@
     Title="">
 
     <ShellContent
-        Title="1ASS ♂Сотрудники♂"
+        Title="Сотрудники"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 </Shell>
